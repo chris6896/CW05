@@ -23,7 +23,90 @@ class AquariumScreen extends StatefulWidget {
   @override
   _AquariumScreenState createState() => _AquariumScreenState();
 }
+class _AquariumScreenState extends State<AquariumScreen> {
+  List<Fish> fishList = [];
+  Color selectedColor = Colors.blue;
+  double selectedSpeed = 1.0;
 
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Aquarium'),
+      ),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            SizedBox(
+              width: 200,
+              height: 300,
+              child: Container(
+                color: Colors.lightBlueAccent,
+                child: Stack(
+                  children: fishList
+                      .map((fish) => AnimatedFish(
+                            fish: fish,
+                            containerWidth: 200,
+                            containerHeight: 300,
+                          ))
+                      .toList(),
+                ),
+              ),
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ElevatedButton(
+                  onPressed: addFish,
+                  child: Text('Add Fish'),
+                ),
+                SizedBox(width: 20),
+                ElevatedButton(
+                  onPressed: removeFish,
+                  child: Text('Remove Fish'),
+                ),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text('Speed:'),
+                Slider(
+                  value: selectedSpeed,
+                  min: 0.5,
+                  max: 3.0,
+                  divisions: 5,
+                  label: selectedSpeed.toString(),
+                  onChanged: (value) {
+                    setState(() {
+                      selectedSpeed = value;
+                    });
+                  },
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // Add Fish method
+  void addFish() {
+    setState(() {
+      fishList.add(Fish(color: selectedColor, speed: selectedSpeed));
+    });
+  }
+
+  // Remove Fish method
+  void removeFish() {
+    if (fishList.isNotEmpty) {
+      setState(() {
+        fishList.removeLast();  // Remove the last fish added
+      });
+    }
+  }
+}
 class Fish {
   final Color color;
   final double speed;
